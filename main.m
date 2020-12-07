@@ -11,11 +11,11 @@ I = [1/4*m*r^2+1/3*m*L^2 1/4*m*r^2+1/3*m*L^2 1/2*m*r^2]; % Mass properties
 ref = [pi/4 pi/6 0]; % Reference attitude [rad]
 
 % Gimbal angles
-% omega = 2*pi*1; 
-% psg = @(t) 0.2*sin(omega*t); 
-% thg = @(t) -0.5*cos(omega*1.3*t);
+% omega = 2*pi*1/2; 
+% psg = @(t) 0.5*sin(omega*t); 
+% thg = @(t) 0.5*cos(omega*t);
 psg = @(t) 0.5;
-thg = @(t) 0.5;
+thg = @(t) 0;
 
 % Thrust
 T = @(t) 15*(t<4); % Thrust for 4 seconds [N]
@@ -49,10 +49,16 @@ end
 
 %% Plot 
 figure
-plot(sol.x,e);
+subplot(2,1,1)
+plot(sol.x,e)
 title('Euler parameters vs Time')
 xlabel('Time [s]');ylabel('Magnitude')
 legend('e_0','e_1','e_2','e_3','Location','Bestoutside')
+subplot(2,1,2)
+plot(sol.x,sol.y(1:3,:))
+title('Euler angles vs Time')
+xlabel('Time [s]');ylabel('Magnitude [rad]')
+legend('\psi','\theta','\phi','Location','Bestoutside')
 %% Animation
 refpos = tr(ref(1),ref(2),ref(3));
 figure
@@ -72,6 +78,7 @@ RA2 = plot3([1 0]*bz(1,3),[1 0]*bz(2,2),[1 0]*bz(3,3),'color',[0.6 1 1],'Linewid
 RA3 = plot3([1 0]*bz(1,1),[1 0]*bz(2,1),[1 0]*bz(3,1),'color',[0.8 1 1],'Linewidth',1.2);
 RH = plot3(bz(1,8),bz(2,8),bz(3,8),'bO','Markersize',5);
 LAM = plot3([0 lam(1,8)]*th(1)/(2*pi),[0 lam(2,8)]*th(1)/(2*pi),[0 lam(3,8)]*th(1)/(2*pi),'rx-','Linewidth',1.3);
+axis equal
 tstr = title('Attitude animation @ t = 0 s');
 for ii = 9:1:length(th1)
     RA.XData = [1 -1]*bz(1,ii);
@@ -93,7 +100,6 @@ for ii = 9:1:length(th1)
     LAM.YData = [0 lam(2,ii)]*th(ii)/(2*pi);
     LAM.ZData = [0 lam(3,ii)]*th(ii)/(2*pi);
     tstr.String = sprintf('Attitude animation @ t = %.2f s',sol.x(ii));
-    axis equal
     drawnow
     pause(0.01)
 end
