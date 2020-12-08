@@ -10,13 +10,14 @@ I = [1/4*m*r^2+1/3*m*L^2 1/4*m*r^2+1/3*m*L^2 1/2*m*r^2]; % Mass properties
 
 ref = [pi/4 pi/6 0]; % Reference attitude [rad]
 
-% Gimbal angles
-% omega = 2*pi*1/2; 
-% psg = @(t) 0.5*sin(omega*t); 
-% thg = @(t) 0.5*cos(omega*t);
-psg = @(t) 0.5;
-thg = @(t) 0;
-
+% Gimbal angles [rad]
+omega = 2*pi*5; 
+psg = @(t) 0.5*sin(omega*t); 
+thg = @(t) 0.5*cos(omega*t);
+% 
+% psg = @(t) 0.5;
+% thg = @(t) 0.5;
+% 
 % Thrust
 T = @(t) 15*(t<4); % Thrust for 4 seconds [N]
 
@@ -54,11 +55,19 @@ plot(sol.x,e)
 title('Euler parameters vs Time')
 xlabel('Time [s]');ylabel('Magnitude')
 legend('e_0','e_1','e_2','e_3','Location','Bestoutside')
+grid on
 subplot(2,1,2)
+plot(sol.x,th/(2*pi),sol.x,lam,'--')
+title('\theta \lambda vs Time')
+xlabel('Time [s]');ylabel('Magnitude')
+legend('\theta/(2\pi)','\lambda_1','\lambda_2','\lambda_3','Location','Bestoutside')
+grid on
+figure
 plot(sol.x,sol.y(1:3,:))
 title('Euler angles vs Time')
 xlabel('Time [s]');ylabel('Magnitude [rad]')
 legend('\psi','\theta','\phi','Location','Bestoutside')
+grid on
 %% Animation
 refpos = tr(ref(1),ref(2),ref(3));
 figure
@@ -72,7 +81,7 @@ hold on
 plot3([-1 1],[0 0],[0 0],'k--','Handlevisibility','off')
 plot3([0 0],[-1 1],[0 0],'k--','Handlevisibility','off')
 plot3([0 0],[0 0],[-1 1],'k--','Handlevisibility','off')
-RA = plot3([1 -1]*bz(1,8),[1 -1]*bz(2,4),[1 -1]*bz(3,8),'color',[0 1 1],'Linewidth',2);
+RA = plot3([1 -1]*bz(1,8),[1 -1]*bz(2,4),[1 -1]*bz(3,8),'m','Linewidth',2);
 RA1 = plot3([1 0]*bz(1,5),[1 0]*bz(2,3),[1 0]*bz(3,5),'color',[0.4 1 1],'Linewidth',1.6);
 RA2 = plot3([1 0]*bz(1,3),[1 0]*bz(2,2),[1 0]*bz(3,3),'color',[0.6 1 1],'Linewidth',1.4);
 RA3 = plot3([1 0]*bz(1,1),[1 0]*bz(2,1),[1 0]*bz(3,1),'color',[0.8 1 1],'Linewidth',1.2);
